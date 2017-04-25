@@ -1,0 +1,103 @@
+0	calc212064	=	(calc212065)
+1	calc212065	=	(program EOF)
+2	program	=	(expression)
+3	expression	=	(multiplicative-expr)
+4	expression	=	(add-sub-expr)
+5	add-sub-expr	=	(expression + multiplicative-expr)
+6	add-sub-expr	=	(expression - multiplicative-expr)
+7	multiplicative-expr	=	(NUM)
+8	multiplicative-expr	=	(NUM * multiplicative-expr)
+State 0
+	calc212064 -> . calc212065 
+
+	multiplicative-expr					goto	5
+	add-sub-expr					goto	4
+	expression					goto	3
+	calc212065					goto	1
+	program					goto	2
+	NUM					shift	6
+
+State 1
+	calc212064 -> calc212065 . 
+
+
+State 2
+	calc212065 -> program . EOF 
+
+	EOF					accept	
+
+State 3
+	program -> expression . 
+	add-sub-expr -> expression . + multiplicative-expr 
+	add-sub-expr -> expression . - multiplicative-expr 
+
+	-					shift	9
+	EOF					reduce	2
+	+					shift	8
+
+State 4
+	expression -> add-sub-expr . 
+
+	-					reduce	4
+	EOF					reduce	4
+	+					reduce	4
+
+State 5
+	expression -> multiplicative-expr . 
+
+	-					reduce	3
+	EOF					reduce	3
+	+					reduce	3
+
+State 6
+	multiplicative-expr -> NUM . 
+	multiplicative-expr -> NUM . * multiplicative-expr 
+
+	*					shift	10
+	-					reduce	7
+	EOF					reduce	7
+	+					reduce	7
+
+State 7
+	calc212065 -> program EOF . 
+
+
+State 8
+	add-sub-expr -> expression + . multiplicative-expr 
+
+	multiplicative-expr					goto	11
+	NUM					shift	6
+
+State 9
+	add-sub-expr -> expression - . multiplicative-expr 
+
+	multiplicative-expr					goto	12
+	NUM					shift	6
+
+State 10
+	multiplicative-expr -> NUM * . multiplicative-expr 
+
+	multiplicative-expr					goto	13
+	NUM					shift	6
+
+State 11
+	add-sub-expr -> expression + multiplicative-expr . 
+
+	-					reduce	5
+	EOF					reduce	5
+	+					reduce	5
+
+State 12
+	add-sub-expr -> expression - multiplicative-expr . 
+
+	-					reduce	6
+	EOF					reduce	6
+	+					reduce	6
+
+State 13
+	multiplicative-expr -> NUM * multiplicative-expr . 
+
+	-					reduce	8
+	EOF					reduce	8
+	+					reduce	8
+
